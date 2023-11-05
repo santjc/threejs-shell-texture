@@ -1,10 +1,8 @@
 # Three.JS - Shell Texture
 
 ### Description
-This repository is my attempt to replicate the shell-texture effect using .glsl and Three.JS, following a tutorial by Acerola. 
+This repository is my attempt to replicate the shell-texture effect using .glsl and Three.JS, following a video by [Acerola](https://www.youtube.com/@Acerola_t). 
 I'm new to three.js and glsl so this serves as a practical learning.
-
-Go check [Acerola channel](https://www.youtube.com/@Acerola_t)
 
 ## Debug
 You can add a /#debug to the url, and it will open the Debug UI Panel.
