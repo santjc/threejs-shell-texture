@@ -22,7 +22,7 @@ export default class Camera extends EventEmitter {
       0.1,
       100
     );
-    this.instance.position.set(0, 2, 3);
+    this.instance.position.set(0, 8, 8);
     this.scene.add(this.instance);
   }
 
@@ -30,8 +30,8 @@ export default class Camera extends EventEmitter {
     this.controls = new OrbitControls(this.instance, this.canvas);
     this.controls.minDistance = 2;
     this.controls.maxDistance = 10;
-    // this.controls.autoRotate = true;
-    // this.controls.autoRotateSpeed = 0.1;
+    this.controls.autoRotate = true;
+    this.controls.autoRotateSpeed = 0.1;
     // Disable everything, except zoom
     // this.controls.enablePan = false;
     // this.controls.enableDamping = true;

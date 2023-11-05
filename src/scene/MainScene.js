@@ -9,19 +9,19 @@ export default class MainScene {
     this.time = this.experience.time;
     this.debugUI = this.experience.debug.ui;
 
-    this.total = 64;
+    this.total = 32;
     this.planeSize = 5;
-    this.planeResolution = 16;
+    this.planeResolution = 32;
     this.shellDistance = 0;
-    this.shellLength = 0.5;
+    this.shellLength = 0.4;
 
-    this.density = 75;
+    this.density = 32;
     this.noiseMin = 1;
     this.noiseMax = 1;
-    this.thickness = 0.75;
+    this.thickness = 0.3;
     this.attenuation = 1;
-    this.occlusionBias = 0.3;
-    this.shellDistanceAttenuation = 0.5;
+    this.occlusionBias = 0.15;
+    this.shellDistanceAttenuation = 0.8;
     //b4e1b0
     this.shellColor = "#b4e1b0";
     this.shellDirection = new THREE.Vector3(0, 1, 0);

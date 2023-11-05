@@ -31,6 +31,7 @@ float hash(int n) {
     float seed = float(n);
     return simpleHash(seed);
 }
+
 void main() {
     // Calculate normalized height of the shell
     float shellHeight = float(shellIndex) / float(shellCount);
@@ -38,17 +39,15 @@ void main() {
 
     int seed = int(uv.x + 100.0 * uv.y + 100.0 * 10.0);
     float noise = hash(seed);
-    float noise2 = hash(seed + 1);
+    shellHeight *= noise * 2.0;
 
     vNormal = normalize(normalMatrix * normal);
     vUv = uv;
     vPosition = position + normal * shellLength * shellHeight;
 
-    vPosition.z += noise2 * 0.2;
-    vPosition.z = smoothstep(0.0, 1.0, vPosition.z);
-
-    float wind = sin(uTime * 0.002 + uv.x * 10.0 + uv.y * 10.0) * 0.1;
-    vPosition.x += wind * noise;
+    // Moving effect
+    float wind = sin(uTime * 0.002 + uv.x * 5.0 + uv.y * 5.0) * 0.1;
+    vPosition.xy += wind * noise * shellHeight;
 
     // Transform the vertex position to clip space
     gl_Position = projectionMatrix * modelViewMatrix * vec4(vPosition, 1.0);

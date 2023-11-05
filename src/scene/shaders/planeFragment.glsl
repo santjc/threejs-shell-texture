@@ -55,14 +55,19 @@ void main() {
     float h = float(shellIndex) / float(shellCount);
 
     // Condition for discarding pixels outside thickness
-    int outsideThickness = int(localDistanceFromCenter > (thickness * (rand - h * 0.75)));
+    int outsideThickness = int(localDistanceFromCenter > (thickness * 3.0 - (h * rand * 0.2)));
     if(outsideThickness > 0 && shellIndex > 0) {
         discard;
     }
 
+    int insideThickness = int(localDistanceFromCenter < (thickness * 2.0 - (h * rand * 0.3)));
+    if(insideThickness > 0 && shellIndex > 0) {
+        discard;
+    }
+
      // Lighting calculation
-    vec3 lightDirection = normalize(vec3(0.0, 1.0, 0.0)); // Replace with actual light direction
-    float ndotl = clamp(dot(normalWorld, lightDirection), 0.0, 1.0) * 0.5 + 0.5;
+    vec3 lightDirection = normalize(vec3(0.0, 1.0, 0.0));
+    float ndotl = clamp(dot(normalWorld, lightDirection), 0.0, 1.0) * 0.65 + 0.5;
     float ambientOcclusion = pow(h, attenuation);
     ambientOcclusion += occlusionBias;
     ambientOcclusion = clamp(ambientOcclusion, 0.0, 1.0);
