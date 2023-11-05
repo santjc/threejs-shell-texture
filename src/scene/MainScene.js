@@ -9,22 +9,21 @@ export default class MainScene {
     this.time = this.experience.time;
     this.debugUI = this.experience.debug.ui;
 
-    this.total = 32;
+    this.total = 64;
     this.planeSize = 5;
-    this.planeResolution = 32;
-    this.shellDistance = 0.01;
+    this.planeResolution = 16;
+    this.shellDistance = 0;
     this.shellLength = 0.5;
 
-    this.density = 50;
+    this.density = 75;
     this.noiseMin = 1;
     this.noiseMax = 1;
-    this.thickness = 0.5;
-    this.attenuation = 0.75;
+    this.thickness = 0.75;
+    this.attenuation = 1;
     this.occlusionBias = 0.3;
-    this.shellDistanceAttenuation = 1;
-    this.curvature = 0.5;
-    this.displacementStrength = 1;
-    this.shellColor = "#00A619";
+    this.shellDistanceAttenuation = 0.5;
+    //b4e1b0
+    this.shellColor = "#b4e1b0";
     this.shellDirection = new THREE.Vector3(0, 1, 0);
 
     this.setPlanes();
@@ -32,10 +31,9 @@ export default class MainScene {
   }
 
   setDebugUI() {
-    // control all of the uniforms
+    if (!this.debugUI) return;
 
     const folder = this.debugUI.addFolder("Shell");
-    // add shell length
     folder
       .add(this, "shellLength", 0, 1)
       .step(0.0001)
@@ -110,17 +108,7 @@ export default class MainScene {
           this.shellDistanceAttenuation;
       });
     });
-    folder.add(this, "curvature", 0, 1).onChange(() => {
-      this.planes.forEach((plane) => {
-        plane.material.uniforms.curvature.value = this.curvature;
-      });
-    });
-    folder.add(this, "displacementStrength", 0, 1).onChange(() => {
-      this.planes.forEach((plane) => {
-        plane.material.uniforms.displacementStrength.value =
-          this.displacementStrength;
-      });
-    });
+
     folder.add(this.shellDirection, "x", -1, 1).onChange(() => {
       this.planes.forEach((plane) => {
         plane.material.uniforms.shellDirection.value = this.shellDirection;
@@ -161,8 +149,6 @@ export default class MainScene {
           type: "f",
           value: this.shellDistanceAttenuation,
         },
-        curvature: { type: "f", value: this.curvature },
-        displacementStrength: { type: "f", value: this.displacementStrength },
         shellColor: {
           type: "c",
           value: new THREE.Color(this.shellColor),

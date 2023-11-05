@@ -37,16 +37,18 @@ void main() {
     shellHeight = pow(shellHeight, shellDistanceAttenuation);
 
     int seed = int(uv.x + 100.0 * uv.y + 100.0 * 10.0);
-    float noise = hash(seed) * 0.25;
-    float noise2 = hash(seed + 1) * 2.0;
+    float noise = hash(seed);
+    float noise2 = hash(seed + 1);
 
     vNormal = normalize(normalMatrix * normal);
     vUv = uv;
     vPosition = position + normal * shellLength * shellHeight;
-    vPosition.y += noise * shellLength * shellHeight * sin(uTime * 0.0025) * noise2;
-    vPosition.x += noise * cos(uTime * 0.0025) * noise2 * shellLength;
 
-    vPosition.z += noise * shellHeight * 1.5;
+    vPosition.z += noise2 * 0.2;
+    vPosition.z = smoothstep(0.0, 1.0, vPosition.z);
+
+    float wind = sin(uTime * 0.002 + uv.x * 10.0 + uv.y * 10.0) * 0.1;
+    vPosition.x += wind * noise;
 
     // Transform the vertex position to clip space
     gl_Position = projectionMatrix * modelViewMatrix * vec4(vPosition, 1.0);

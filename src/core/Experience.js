@@ -1,6 +1,7 @@
 import * as THREE from "three";
 
 import { Camera, Renderer } from "./render/index.js";
+import Stats from "stats.js";
 import { Debug, Sizes, Time, Resources } from "./utilities/index.js";
 
 import sources from "../utils/sources.js";
@@ -29,6 +30,10 @@ export default class Experience {
     this.camera = new Camera();
     this.renderer = new Renderer();
     this.mainScene = new MainScene();
+    this.performancePanel = new Stats();
+
+    this.performancePanel.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
+    document.body.appendChild(this.performancePanel.dom);
 
     // Resize event
     this.sizes.on("resize", () => {
@@ -50,6 +55,8 @@ export default class Experience {
     this.camera.update();
     this.renderer.update();
     this.mainScene.update();
+    this.performancePanel.begin();
+    this.performancePanel.end();
   }
 
   destroy() {

@@ -55,7 +55,7 @@ void main() {
     float h = float(shellIndex) / float(shellCount);
 
     // Condition for discarding pixels outside thickness
-    int outsideThickness = int(localDistanceFromCenter > (thickness * (rand - h * 0.5)));
+    int outsideThickness = int(localDistanceFromCenter > (thickness * (rand - h * 0.75)));
     if(outsideThickness > 0 && shellIndex > 0) {
         discard;
     }
@@ -63,15 +63,11 @@ void main() {
      // Lighting calculation
     vec3 lightDirection = normalize(vec3(0.0, 1.0, 0.0)); // Replace with actual light direction
     float ndotl = clamp(dot(normalWorld, lightDirection), 0.0, 1.0) * 0.5 + 0.5;
-    ndotl = pow(ndotl, 0.1);
-
     float ambientOcclusion = pow(h, attenuation);
     ambientOcclusion += occlusionBias;
     ambientOcclusion = clamp(ambientOcclusion, 0.0, 1.0);
 
-    // Final color calculation
     vec3 finalColor = shellColor * ndotl * ambientOcclusion;
-
     gl_FragColor = vec4(finalColor, 1.0);
 
 }
