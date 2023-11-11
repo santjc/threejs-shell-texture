@@ -10,6 +10,7 @@ uniform mediump float attenuation;
 uniform mediump float occlusionBias;
 uniform mediump float shellDistanceAttenuation;
 uniform mediump vec3 shellColor;
+uniform mediump vec3 furLightColor;
 uniform mediump mat3 normalMatrix;
 
 varying vec3 vPosition;
@@ -55,13 +56,10 @@ void main() {
     float h = float(shellIndex) / float(shellCount);
 
     // Condition for discarding pixels outside thickness
-    int outsideThickness = int(localDistanceFromCenter > (thickness * 3.0 - (h * rand * 0.2)));
-    if(outsideThickness > 0 && shellIndex > 0) {
-        discard;
-    }
+    int outsideThickness = int(localDistanceFromCenter > (thickness * 2.0 - (h * rand)));
+    int furLights = int(localDistanceFromCenter < (thickness - (h * rand * 0.35)));
 
-    int insideThickness = int(localDistanceFromCenter < (thickness * 2.0 - (h * rand * 0.3)));
-    if(insideThickness > 0 && shellIndex > 0) {
+    if(outsideThickness > 0 && shellIndex > 0) {
         discard;
     }
 
@@ -72,7 +70,10 @@ void main() {
     ambientOcclusion += occlusionBias;
     ambientOcclusion = clamp(ambientOcclusion, 0.0, 1.0);
 
-    vec3 finalColor = shellColor * ndotl * ambientOcclusion;
+    vec3 finalColor = shellColor * ndotl * ambientOcclusion * shellHeight * 2.0;
+    if(furLights > 0) {
+        finalColor = furLightColor * ndotl * ambientOcclusion * shellHeight * 2.0;
+    }
     gl_FragColor = vec4(finalColor, 1.0);
 
 }

@@ -28,16 +28,16 @@ export default class Camera extends EventEmitter {
 
   setControls() {
     this.controls = new OrbitControls(this.instance, this.canvas);
-    this.controls.minDistance = 2;
-    this.controls.maxDistance = 10;
+    this.controls.minDistance = 10;
+    this.controls.maxDistance = 25;
     this.controls.autoRotate = true;
-    this.controls.autoRotateSpeed = 0.1;
+    this.controls.autoRotateSpeed = 0.15;
     // Disable everything, except zoom
-    // this.controls.enablePan = false;
-    // this.controls.enableDamping = true;
+    this.controls.enablePan = false;
+    this.controls.enableDamping = true;
     // this.controls.enableZoom = true;
     // this.controls.enableRotate = false;
-    // this.controls.zoomSpeed = 0.5;
+    this.controls.zoomSpeed = 0.5;
   }
 
   resize() {

@@ -9,24 +9,25 @@ export default class MainScene {
     this.time = this.experience.time;
     this.debugUI = this.experience.debug.ui;
 
-    this.total = 32;
-    this.planeSize = 5;
-    this.planeResolution = 32;
-    this.shellDistance = 0;
-    this.shellLength = 0.4;
+    this.total = 48;
+    this.torusSize = 4;
+    this.torusResolution = 64;
+    this.shellDistance = 0.05;
+    this.shellLength = 1;
 
-    this.density = 32;
+    this.density = 100;
     this.noiseMin = 1;
     this.noiseMax = 1;
-    this.thickness = 0.3;
+    this.thickness = 0.5;
     this.attenuation = 1;
-    this.occlusionBias = 0.15;
-    this.shellDistanceAttenuation = 0.8;
+    this.occlusionBias = 0.5;
+    this.shellDistanceAttenuation = 1;
     //b4e1b0
-    this.shellColor = "#b4e1b0";
+    this.shellColor = "#6E46AE";
+    this.furLightColor = "#00B6B4";
     this.shellDirection = new THREE.Vector3(0, 1, 0);
 
-    this.setPlanes();
+    this.setTorus();
     this.setDebugUI();
   }
 
@@ -38,25 +39,25 @@ export default class MainScene {
       .add(this, "shellLength", 0, 1)
       .step(0.0001)
       .onChange(() => {
-        this.planes.forEach((plane, index) => {
-          plane.material.uniforms.shellLength.value = this.shellLength;
+        this.toruses.forEach((torus, index) => {
+          torus.material.uniforms.shellLength.value = this.shellLength;
         });
       });
     folder
       .add(this, "shellDistance", 0, 1)
       .step(0.0001)
       .onChange(() => {
-        this.planes.forEach((plane, index) => {
-          plane.position.setY(index * this.shellDistance);
+        this.toruses.forEach((torus, index) => {
+          torus.position.setY(index * this.shellDistance);
         });
       });
 
     folder
-      .add(this, "planeSize", 0, 10)
+      .add(this, "torusSize", 0, 10)
       .step(1)
       .onChange(() => {
-        this.planes.forEach((plane, index) => {
-          plane.scale.set(this.planeSize, this.planeSize, this.planeSize);
+        this.toruses.forEach((torus, index) => {
+          torus.scale.set(this.torusSize, this.torusSize, this.torusSize);
         });
       });
 
@@ -64,71 +65,67 @@ export default class MainScene {
       .add(this, "total", 0, 100)
       .step(1)
       .onChange(() => {
-        this.planes.forEach((plane, index) => {
-          this.scene.remove(plane);
+        this.toruses.forEach((torus, index) => {
+          this.scene.remove(torus);
         });
-        this.setPlanes();
+        this.setTorus();
       });
     folder
       .add(this, "density", 0, 100)
       .step(1)
       .onChange(() => {
-        this.planes.forEach((plane) => {
-          plane.material.uniforms.density.value = this.density;
+        this.toruses.forEach((torus) => {
+          torus.material.uniforms.density.value = this.density;
         });
       });
     folder.add(this, "noiseMin", 0, 1).onChange(() => {
-      this.planes.forEach((plane) => {
-        plane.material.uniforms.noiseMin.value = this.noiseMin;
+      this.toruses.forEach((torus) => {
+        torus.material.uniforms.noiseMin.value = this.noiseMin;
       });
     });
     folder.add(this, "noiseMax", 0, 1).onChange(() => {
-      this.planes.forEach((plane) => {
-        plane.material.uniforms.noiseMax.value = this.noiseMax;
+      this.toruses.forEach((torus) => {
+        torus.material.uniforms.noiseMax.value = this.noiseMax;
       });
     });
     folder.add(this, "thickness", 0, 1).onChange(() => {
-      this.planes.forEach((plane) => {
-        plane.material.uniforms.thickness.value = this.thickness;
+      this.toruses.forEach((torus) => {
+        torus.material.uniforms.thickness.value = this.thickness;
       });
     });
     folder.add(this, "attenuation", 0, 1).onChange(() => {
-      this.planes.forEach((plane) => {
-        plane.material.uniforms.attenuation.value = this.attenuation;
+      this.toruses.forEach((torus) => {
+        torus.material.uniforms.attenuation.value = this.attenuation;
       });
     });
     folder.add(this, "occlusionBias", 0, 1).onChange(() => {
-      this.planes.forEach((plane) => {
-        plane.material.uniforms.occlusionBias.value = this.occlusionBias;
+      this.toruses.forEach((torus) => {
+        torus.material.uniforms.occlusionBias.value = this.occlusionBias;
       });
     });
     folder.add(this, "shellDistanceAttenuation", 0, 1).onChange(() => {
-      this.planes.forEach((plane) => {
-        plane.material.uniforms.shellDistanceAttenuation.value =
+      this.toruses.forEach((torus) => {
+        torus.material.uniforms.shellDistanceAttenuation.value =
           this.shellDistanceAttenuation;
       });
     });
-
-    folder.add(this.shellDirection, "x", -1, 1).onChange(() => {
-      this.planes.forEach((plane) => {
-        plane.material.uniforms.shellDirection.value = this.shellDirection;
-      });
-    });
   }
 
-  setPlanes() {
-    this.planes = [];
+  setTorus() {
+    this.toruses = [];
     for (let i = 0; i < this.total; i++) {
       const position = new THREE.Vector3(0, i * this.shellDistance, 0);
-      const plane = this.createPlane(position, i);
-      this.planes.push(plane);
-      this.scene.add(plane);
+      const torus = this.createTorus(position, i);
+      this.toruses.push(torus);
+      this.scene.add(torus);
     }
   }
-  createPlane(position, index) {
-    const geometry = new THREE.CircleGeometry(
-      this.planeSize,
-      this.planeResolution
+  createTorus(position, index) {
+    const geometry = new THREE.TorusKnotGeometry(
+      this.torusSize,
+      this.torusSize / 3,
+      this.torusResolution,
+      this.torusResolution
     );
     const material = new THREE.RawShaderMaterial({
       fragmentShader: planeFragment,
@@ -153,6 +150,10 @@ export default class MainScene {
           type: "c",
           value: new THREE.Color(this.shellColor),
         },
+        furLightColor: {
+          type: "c",
+          value: new THREE.Color(this.furLightColor),
+        },
         shellDirection: {
           type: "v3",
           value: this.shellDirection,
@@ -161,16 +162,16 @@ export default class MainScene {
         // Add any other uniforms you have in your shader
       },
     });
-    const plane = new THREE.Mesh(geometry, material);
-    plane.rotation.set(-Math.PI / 2, 0, 0);
-    plane.position.copy(position);
-    return plane;
+    const torus = new THREE.Mesh(geometry, material);
+    torus.rotation.set(-Math.PI / 2, 0, 0);
+    torus.position.copy(position);
+    return torus;
   }
 
   update() {
     const elapsedTime = this.time.elapsed;
-    this.planes.forEach((plane) => {
-      plane.material.uniforms.uTime.value = elapsedTime;
+    this.toruses.forEach((torus) => {
+      torus.material.uniforms.uTime.value = elapsedTime;
     });
   }
 }
